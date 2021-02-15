@@ -100,7 +100,7 @@ IF ($LeadershipMembers.count -gt 0){
     # Add to Leadership Group
     ForEach ($LeadershipMember in $LeadershipMembers) {
         Write-Host "Adding (" $LeadershipMember.displayname ") to" $StaffWLAN
-        #add-adgroupmember -identity $StaffWLAN -Members $LeadershipMember.SamAccountName
+        add-adgroupmember -identity $StaffWLAN -Members $LeadershipMember.SamAccountName
     }
 } Else {
     Write-Host "No accounts found in Leadership OU to add to $StaffWLAN"
