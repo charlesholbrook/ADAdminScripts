@@ -1,4 +1,4 @@
-﻿# Powershell script to add users to desired groups for WLAN access
+ # Powershell script to add users to desired groups for WLAN access
 #
 # Author: Charles Holbrook
 #
@@ -6,8 +6,9 @@
 # Version 1.0 - 02/12/2021
 # Version 1.1 - 02/12/2021 (Updated to find domain name instead of having to manually edit and add it.)
 # Version 1.2 - 02/14/2021 (Updated to check if AD groups exist and alert if they do not.)
+# Version 1.3 - 02/15/2021 (Updated to check if Active Directory Module is available and load it.)
 #
-# You should only need to modify lines 15 and 16 to match group names
+# You should only need to modify lines 16 and 17 to match group names
 # 
 
 
@@ -23,6 +24,13 @@ $Students = "Students"
 
 
 # <---------- STOP - Modify only if needed from this point on as you can break something ---------->
+
+# We need to make sure that the Active Directory module is available and load it.
+# If not then we need to alert and advise so that RSAT tools can be installed
+IF (Get-Module -ListAvailable -Name ActiveDirectory) {
+
+# Import Active Directory Module
+Import-Module Active-Directory
 
 # Lets verifiy that Staff and Student WLAN groups exist first, if not alert
 $StaffWLANExist = Get-ADGroup -LDAPFilter "(SAMAccountName=$StaffWLAN)"
@@ -139,8 +147,15 @@ Write-Host "You may now close the script."
 
 } Else {
     
-    Write-Host "$StuWLAN group not found, please check spelling or verifiy if group exist in AD."
+    Write-Warning "$StuWLAN group not found, please check spelling or verifiy if group exist in AD."
     }
 } Else {
-    Write-Host "$StaffWLAN group no found, please check spelling or verify if group exist in AD."
+    Write-Warning "$StaffWLAN group not found, please check spelling or verify if group exist in AD."
     }
+
+
+
+# End of script section for checking if RSAT/AD Tools are installed.
+} Else {
+    Write-Warning "Unable to load Active Directory Module, please verify that RSAT tools are installed."
+} 
